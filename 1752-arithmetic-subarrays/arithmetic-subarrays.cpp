@@ -1,15 +1,33 @@
 class Solution {
 public:
-    bool checkArithmetic(vector<int>&curr){
-        sort(curr.begin(),curr.end());
-        int diff=curr[1]-curr[0];
-        int i=1;
-        while(i<curr.size()-1&&(curr[i+1]-curr[i])==diff){
-            i++;
+   bool check(vector<int>& arr) {
+        int minElement = INT_MAX;
+        int maxElement = INT_MIN;
+        unordered_set<int> arrSet;
+        
+        for (int num : arr) {
+            minElement = min(minElement, num);
+            maxElement = max(maxElement, num);
+            arrSet.insert(num);
         }
-        if(i==curr.size()-1)return true;
-        return false;
-    }
+        
+        if ((maxElement - minElement) % (arr.size() - 1) != 0) {
+            return false;
+        }
+               
+        int diff = (maxElement - minElement) / (arr.size() - 1);
+        int curr = minElement + diff;
+        
+        while (curr < maxElement) {
+            if (arrSet.find(curr) == arrSet.end()) {
+                return false;
+            }
+            
+            curr += diff;
+        }
+        
+        return true;
+   }
     vector<bool> checkArithmeticSubarrays(vector<int>& nums, vector<int>& l, vector<int>& r) {
         vector<bool>ans;
         for(int i=0;i<l.size();i++){
@@ -21,7 +39,7 @@ public:
                 // cout<<nums[j]<<',';
                 }
                 // cout<<endl;
-                ans.push_back(checkArithmetic(curr));
+                ans.push_back(check(curr));
             }
         }
         return ans;
