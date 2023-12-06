@@ -1,18 +1,12 @@
 class Solution {
 public:
     int totalMoney(int n) {
-        int ans=0;
-        int tot=1,temp=n;
-        while(temp){
-            int curr=tot,day=0;
-            while(day<7&&temp>0){
-                ans=ans+curr;
-                curr++;
-                day++;
-                temp--;
-            }
-            tot++;
+        int quo=n/7,rem=n%7,ans=0,day=0;
+        while(rem--){
+            ans+=(quo+1)+day;
+            day++;
         }
+        ans=ans+28*quo+7*((quo*(quo-1))/2);
         return ans;
     }
 };
