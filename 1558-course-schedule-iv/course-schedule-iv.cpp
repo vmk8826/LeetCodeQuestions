@@ -1,30 +1,27 @@
 class Solution {
 public:
-    bool isPreReq(int start,int end,vector<int>adj[],int n){
-        queue<int>qu;
-        vector<int>vis(n,0);
-        qu.push(start);
-        while(!qu.empty()){
-            int node = qu.front();
-            vis[node]=1;
-            qu.pop();
-            for(auto it:adj[node]){
-                if(!vis[it]){
-                    qu.push(it);
-                    if(it==end)return true;
+    vector<bool> checkIfPrerequisite(int n, vector<vector<int>>& pre, vector<vector<int>>& q) {
+        // vector<int>adj[n];
+        vector<vector<int>>dis(n+1,vector<int>(n+1,INT_MAX/2));
+        vector<bool>ans(q.size(),0);
+        for(int i=0;i<pre.size();i++){
+            // adj[pre[i][0]].push_back(pre[i][1]);
+            dis[pre[i][0]][pre[i][1]]=1;
+        }
+        
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                for(int k=0;k<n;k++){
+                    if(dis[j][k]>dis[j][i]+dis[i][k]){
+                        dis[j][k]=dis[j][i]+dis[i][k];
+                    }
                 }
             }
         }
-        return false;
-    }
-    vector<bool> checkIfPrerequisite(int n, vector<vector<int>>& pre, vector<vector<int>>& q) {
-        vector<int>adj[n];
-        vector<bool>ans;
-        for(int i=0;i<pre.size();i++){
-            adj[pre[i][0]].push_back(pre[i][1]);
-        }
         for(int i=0;i<q.size();i++){
-            ans.push_back(isPreReq(q[i][0],q[i][1],adj,n));
+            // cout<<q[i][0]<<" "<<q[i][1]<<" ";
+            if(dis[q[i][0]][q[i][1]]!=INT_MAX/2)
+                ans[i]=1;
         }
         return ans;
     }
