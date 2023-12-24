@@ -1,33 +1,40 @@
 class Solution {
 public:
-    pair<int,int> getLoudest(int i,vector<int>adj[],
-    vector<int>vis,vector<int>&q,vector<pair<int,int>>&dp){
-        if(dp[i].first!=-1)return dp[i];
-        vis[i]=1;
-        int mini=q[i];
-        int ans=i;
-        for(auto it:adj[i]){
-            if(!vis[it]){
-                pair<int,int>curr=getLoudest(it,adj,vis,q,dp);
-                if(mini>curr.second){
-                    ans=curr.first;
-                    mini=curr.second;
-                }
+    void makeList(unordered_map<int, list<int>> &adj, vector<vector<int>>& richer){
+        for(auto i : richer){
+            adj[i[1]].push_back(i[0]);
+        }
+    }
+
+    pair<int, int> solve(unordered_map<int, list<int>> &adj, vector<int>& quiet, vector<pair<int, int>> &dp, int node){
+        if(dp[node].first != -1) return dp[node];
+
+        pair<int, int> num = {node, quiet[node]};
+
+        for(auto i : adj[node]){
+            pair<int, int> temp = solve(adj, quiet, dp, i);
+
+            if(temp.second < num.second){
+                num = temp;
             }
         }
-        return dp[i]={ans,mini};
+
+        return dp[node] = num;
     }
-    vector<int> loudAndRich(vector<vector<int>>& r, vector<int>& q) {
-        vector<int>adj[q.size()];
-        for(int i=0;i<r.size();i++){
-            adj[r[i][1]].push_back(r[i][0]);
+
+    vector<int> loudAndRich(vector<vector<int>>& richer, vector<int>& quiet) {
+        int n = quiet.size();
+        unordered_map<int, list<int>> adj;
+        makeList(adj, richer);
+
+        vector<pair<int, int>> dp(n, {-1, -1});
+        vector<int> ans(n);
+
+        for(int i=0; i<n; i++){
+            pair<int, int> res = solve(adj, quiet, dp, i);
+            ans[i] = res.first;
         }
-        vector<int>ans;
-        vector<pair<int,int>>dp(q.size(),{-1,-1});
-        for(int i=0;i<q.size();i++){
-            vector<int>vis(q.size(),0);
-            ans.push_back(getLoudest(i,adj,vis,q,dp).first);
-        }
+
         return ans;
     }
 };
