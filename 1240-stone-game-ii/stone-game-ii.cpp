@@ -1,25 +1,33 @@
 class Solution {
 public:
-    int dp[101][101];
-    int getMaxStones(int i,int m,vector<int>&p){
+    int dp[101][101][2];
+    int getMaxStones(int i,int m,int alice,vector<int>&p){
         
         if(i>=p.size())return 0;
-        if(dp[i][m]!=-1)return dp[i][m];
+        if(dp[i][m][alice]!=-1)return dp[i][m][alice];
 
-        int sum=0,maxi=INT_MIN,n=p.size();
-
-        for(int x=0;x<min(2*m,n-i);x++){
-           sum+=p[i+x];
-            maxi=max(maxi,sum-getMaxStones(i+x+1,max(m,x+1),p));
+        int result = alice?-1:INT_MAX;
+        int sum=0;
+        int n=p.size();
+        for(int j=0;j<min(2*m,n-i);j++){
+            sum=sum+p[i+j];
+            if(alice){
+                result=max(result,sum+
+                            getMaxStones(i+j+1,max(j+1,m),0,p));
+            }
+            else{
+                result=min(result,
+                            getMaxStones(i+j+1,max(j+1,m),1,p));
+            }
         }
 
-        return dp[i][m]=maxi;
+        return dp[i][m][alice]=result;
     }
     int stoneGameII(vector<int>& piles) {
 
-        int sum = accumulate(piles.begin(),piles.end(),0);
+        // int sum = accumulate(piles.begin(),piles.end(),0);
         memset(dp,-1,sizeof(dp));
-        return (sum+getMaxStones(0,1,piles))/2;
+        return getMaxStones(0,1,1,piles);
 
     }
 };
