@@ -1,25 +1,18 @@
 class Solution {
 public:
-    int dp[10005];
-    int getMax(int i,vector<int>&nums,map<int,int>&mp){
-        if(i>=nums.size())return 0;
-        if(dp[i]!=-1)return dp[i];
-        int take=nums[i]*mp[nums[i]];
-        if(i+1<nums.size()&&nums[i+1]!=nums[i]+1)take+=getMax(i+1,nums,mp);
-        else take+=getMax(i+2,nums,mp);
-        int ntake=getMax(i+1,nums,mp);
-        return dp[i]=max(ntake,take);
-    }
     int deleteAndEarn(vector<int>& nums) {
-        map<int,int>mp;
+        vector<int>count(10005,0);
         for(int i=0;i<nums.size();i++){
-            mp[nums[i]]++;
+            count[nums[i]]++;
         }
-        memset(dp,-1,sizeof(dp));
-        vector<int>store;
-        for(auto it:mp){
-            store.push_back(it.first);
+        int take=count[1],ntake=0;
+        for(int i=2;i<10005;i++){
+            int currtake=i*count[i]+ntake;
+            int currntake=max(take,ntake);
+            take=currtake;
+            ntake=currntake;
         }
-        return getMax(0,store,mp);
+        return max(take,ntake);
     }
+
 };
