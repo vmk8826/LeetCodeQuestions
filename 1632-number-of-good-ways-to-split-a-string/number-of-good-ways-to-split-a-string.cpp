@@ -1,6 +1,6 @@
 class Solution {
 public:
-    int getSplits(string s){
+    int getSplits(string &s){
         unordered_map<int,int>dp,dp1;
         for(int i=0;i<s.size();i++){
             dp[s[i]-'a']++;
