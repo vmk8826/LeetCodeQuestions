@@ -1,24 +1,12 @@
 class Solution {
 public:
     bool canReach(string s, int minJump, int maxJump) {
-        queue<int>qu;
-        int n=s.size();
-        qu.push(0);
-        int curr_max=0;
-        while(!qu.empty()){
-            int curr=qu.front();
-            qu.pop();
-            if(curr==s.size()-1)return true;
-            for(int i=max(curr+minJump,curr_max);i<=min(curr + maxJump,n-1);i++){
-                // cout<<i<<",";
-                if(s[i]=='0'){
-                    // cout<<i<<" ";
-                    qu.push(i);
-                }
-            }
-                // cout<<endl;
-            curr_max = min(curr+maxJump+1, n);
-        }
-        return false;
-    }
+        for (int i = 0, j = 0; i < s.size(); ++i)
+            if (i == 0 || s[i] == '2')
+                for (j = max(j, i + minJump); j <= min((int)s.size() - 1, i + maxJump); ++j)
+                    if (s[j] == '0')
+                        s[j] = '2';
+        return s[s.size() - 1] == '2';
+    } 
 };
+// ```![image.png](https://assets.leetcode.com/users/images/05b04280-21c8-46c8-83ec-c3e2b0e085fb_1694077342.2801075.png)
