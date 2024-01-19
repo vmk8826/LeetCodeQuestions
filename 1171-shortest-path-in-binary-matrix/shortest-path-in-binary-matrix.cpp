@@ -11,6 +11,7 @@ public:
             int currx=qu.front().first;
             int curry=qu.front().second;
             qu.pop();
+            if(currx==grid.size()&&curry==grid[0].size())return dis[currx][curry];
             for(int i=0;i<8;i++){
                 int nx=currx+movx[i];
                 int ny=curry+movy[i];
