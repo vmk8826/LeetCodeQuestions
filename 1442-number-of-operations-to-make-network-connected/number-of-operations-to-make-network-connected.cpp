@@ -1,30 +1,40 @@
 class Solution {
 public:
-    void Cycles(vector<int>adj[],vector<int>&vis,int s){
-       vis[s]=1;
-        for(auto it : adj[s]){
-           if(!vis[it]){
-             Cycles(adj,vis,it);
-           }
+   class DSU{ 
+        public:
+        vector<int>par;
+        DSU(int n){
+            par.resize(n);
+            for(int i=0;i<n;i++){
+                par[i]=i;
+            }
         }
-    }
-    int makeConnected(int n, vector<vector<int>>& connections) {
-        vector<int>adj[n+1];
-        for(int i=0;i<connections.size();i++){
-           int a = connections[i][0],b=connections[i][1];
-           adj[a].push_back(b);
-            adj[b].push_back(a);
+        void markParent(int a,int b){
+            int parA=getParent(a);
+            int parB=getParent(b);
+            par[parA]=parB;
         }
-        vector<int>vis(n+1,0);
-        int compCount=0;
+        int getParent(int a){
+            if(par[a]==a)return a;
+            return par[a]=getParent(par[a]);
+        }
+    };
+    int makeConnected(int n, vector<vector<int>>& c) {
+        DSU curr(n);
+        int nodes=0;
+        for(int i=0;i<c.size();i++){
+            int parA=curr.getParent(c[i][0]);
+            int parB=curr.getParent(c[i][1]);
+            if(parA==parB)nodes++;
+            else{
+                curr.markParent(c[i][0],c[i][1]);
+            }
+        }
+        int counter=0;
         for(int i=0;i<n;i++){
-           if(!vis[i]){
-               compCount++;
-              Cycles(adj,vis,i);
-           }
+            if(curr.par[i]==i)counter++;
         }
-        // cout<<compCount;
-        if(connections.size()<n-1)return -1;
-        else return compCount-1;
+        if(nodes>=counter-1)return counter-1;
+        return -1;
     }
 };
